@@ -54,9 +54,14 @@ module Relevance
       end
 
       def crawl
-        response = crawler.follow(method, href)
-        log "Response #{response.code} for #{self}"
-        crawler.handle_link_results(self, make_result(response))
+        response = nil
+        begin
+          response = crawler.follow(method, href)
+          log "Response #{response.code} for #{self}"
+        rescue 
+        ensure
+          crawler.handle_link_results(self, make_result(response))
+        end
       end
 
       def make_result(response)
@@ -91,7 +96,7 @@ module Relevance
         end
 
       def to_s
-        "<Relevance::Tarantula::Link href=#{href}, method=#{method}>"
+        "<Relevance::Tarantula::Link href=#{href}, method=#{method}, referrer=#{referrer}>"
       end
 
     end
